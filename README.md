@@ -7,17 +7,36 @@ I installed Ubuntu Server 20.04 on an old Thinkpad X260 that I got for $140 on e
 If I could make a recommendation to those purchasing hardware, I would say to use an old laptop and then install a 1TB or 2TB Sata SSD instead of using a NAS with the NFS share. This will have better performance with good reliability. No need for RAID since you have cloud backups.
 
 ## Install and Configure Nextcloud
-During the installation process for Ubuntu Server 20.04 you get the option to install Nextcloud. This is what I did. It installs the Snap version of Nextcloud. You can also do this by running <code>sudo snap install nextcloud</code>. 
+During the installation process for Ubuntu Server 20.04 you get the option to install Nextcloud. This is what I did. It installs the Snap version of Nextcloud. You can also do this by running 
+```
+sudo snap install nextcloud
+```
 
 Finish the installation process by navigating to <code>http://server_ip/.</code> You will be greeted by the Admin Account window. Create an admin account.
 
 #### Move Data Directory (Optional)
 As I mentioned above, I have the Nextcloud data stored on my NAS via a NFS share. To do this I had to move the Nextcloud data directory like so:
-1. Enable the removable media plugin: <code>sudo snap connect nextcloud:removable-media</code>
-1. Disable the snap: <code>sudo snap disable nextcloud</code>
-1. Move or copy the current data directory to a new location: <code>sudo mv /var/snap/nextcloud/common/nextcloud/data /media/my/new/data</code>
-1. Edit the <code>datadirectory</code> line in this config file to point to your new location. <code>sudo nano /var/snap/nextcloud/current/nextcloud/config/config.php</code>
-1. Re-enable the snap: <code>sudo snap enable nextcloud</code>
+
+Enable the removable media plugin:
+```
+sudo snap connect nextcloud:removable-media
+```
+Disable the snap: 
+```
+sudo snap disable nextcloud
+```
+Move or copy the current data directory to a new location:
+```
+sudo mv /var/snap/nextcloud/common/nextcloud/data /media/my/new/data
+```
+Edit the <code>datadirectory</code> line in this config file to point to your new location. 
+```
+sudo nano /var/snap/nextcloud/current/nextcloud/config/config.php
+```
+Re-enable the snap: 
+```
+sudo snap enable nextcloud
+```
 
 #### Setup custom domain
 If you're going to use a custom domain and expose this server to the internet, you'll need to edit your config file at <code>/var/snap/nextcloud/current/nextcloud/config/config.php</code> and add your domain like so:
@@ -32,7 +51,9 @@ Setup your DNS to point to your server IP. If you are self-hosting, you will nee
 
 #### Setup Let's Encrypt
 If you are using a domain you can setup Let's Encrypt with 1 command:
-<code>sudo nextcloud.enable-https lets-encrypt</code>
+```
+sudo nextcloud.enable-https lets-encrypt
+```
 
 ## Backups
 I run nightly backups to [Backblaze B2 cloud storage](https://www.backblaze.com/b2/cloud-storage.html). It's an AWS S3 compatable object storage that is a third of the cost of AWS S3. You get 10GB for free so you can experiment with no risk. I am backing up ~350GB for around $1.75 per month. The backups are encrypted with client-side encryption so that I can use cheap and potentially untrusted storage providors without needing to worry about privacy. 
@@ -76,7 +97,7 @@ logout
 ```
 
 #### Setup Rclone as the backup user
-If you already created a Rclone config as your normal user, you can just copy the config to the <code>ncbackup</code> user like so:
+Since we will run the script as the <code>ncbackup</code> user, we will need to setup rclone for him as well. If you already created a Rclone config as your normal user, you can just copy the config to the <code>ncbackup</code> user like so:
 ```
 sudo cp ~/.config/rclone/rclone.conf /home/ncbackup/.config/rclone/rclone.conf
 ```
