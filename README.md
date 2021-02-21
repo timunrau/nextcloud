@@ -2,7 +2,9 @@
 This is how I setup my self-hosted Nextcloud server with encrypted cloud backups on the cheap.
 
 #### Hardware
-I installed Ubuntu Server 20.04 on an old Thinkpad X260 that I got for $140 on ebay a few years ago. Old laptops are great becuase you have a built in KVM and battery backup. My Nextcloud data is stored on a QNAP TS-869 Pro. It's mounted in Ubuntu via a NFS share.
+I installed Ubuntu Server 20.04 on an old Thinkpad X260 that I got for $140 on ebay a few years ago. Old laptops are great becuase you have a built in KVM and battery backup. My Nextcloud data is stored on a QNAP TS-869 Pro. It's mounted in Ubuntu via a NFS share. This is just what I had laying around.
+
+If I could make a recommendation to those purchasing hardware, I would say to use an old laptop and then install a 1TB or 2TB Sata SSD instead of using a NAS with the NFS share. This will have better performance with good reliability. No need for RAID since you have cloud backups.
 
 ## Install and Configure Nextcloud
 During the installation process for Ubuntu Server 20.04 you get the option to install Nextcloud. This is what I did. It installs the Snap version of Nextcloud. You can also do this by running <code>sudo snap install nextcloud</code>. 
@@ -33,7 +35,17 @@ If you are using a domain you can setup Let's Encrypt with 1 command:
 <code>sudo nextcloud.enable-https lets-encrypt</code>
 
 ## Backups
-I run nightly backups to Backblaze B2 cloud storage. It's an AWS S3 compatable object storage that is a third of the cost of AWS S3. The backups are encrypted with client-side encryption so that I can use cheap and potentially untrusted storage providors without needing to worry about privacy. 
+I run nightly backups to [Backblaze B2 cloud storage](https://www.backblaze.com/b2/cloud-storage.html). It's an AWS S3 compatable object storage that is a third of the cost of AWS S3. You get 10GB for free so you can experiment with no risk. I am backing up ~350GB for around $1.75 per month. The backups are encrypted with client-side encryption so that I can use cheap and potentially untrusted storage providors without needing to worry about privacy. 
+
+#### Rclone
+[Rclone](https://rclone.org/) is what I use to interface with Backblaze. It is compatible with many different cloud storage providers and has built in encryption. Perfect for our needs!
+
+Install Rclone:
+<code>sudo apt install rclone</code>
+
+Configure Rclone:
+<code>rclone config</code>
+
 
 
 
