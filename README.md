@@ -121,7 +121,7 @@ nextcloud.occ maintenance:mode --on
 
 # Copy files to backblaze using rclone
 echo "rclone nextcloud data to backblaze"
-rclone sync -v /var/snap/nextcloud/ b2-encrypted:
+rclone sync -v --fast-list /var/snap/nextcloud/ b2-encrypted:
 
 echo "disable maintenance mode"
 nextcloud.occ maintenance:mode --off
